@@ -1,0 +1,31 @@
+# .NET build outputs
+bin/
+obj/
+publish/
+
+# Visual Studio / IDE
+.vs/
+.vscode/
+.idea/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# NuGet
+*.nupkg
+packages/
+
+# Development secrets
+appsettings.Development.json
+secrets.json
+
+# Rider caches
+.idea/
