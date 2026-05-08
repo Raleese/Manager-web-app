@@ -19,9 +19,24 @@ public class UsersController : ControllerBase
     public ActionResult<IEnumerable<object>> Get()
     {
         var users = _db.Users
-            .Select(u => new { u.Id, u.FirstName, u.LastName, Identifier = u.Identifier })
+            .Select(u => new 
+            { 
+                u.Id, 
+                u.FirstName, 
+                u.LastName, 
+                u.Identifier 
+            })
             .ToList();
 
         return Ok(users);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<User>> Post(User user)
+    {
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
     }
 }
