@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Container, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { getInventory } from '../api/managerApi';
 import type { Item } from '../types/item_user_types';
 
 export default function Inventory() {
@@ -9,8 +10,7 @@ export default function Inventory() {
   const [userFilter, setUserFilter] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5067/api/inventory')
-      .then((res) => res.json())
+    getInventory()
       .then((data) => setItems(data))
       .catch((err) => console.error('Failed to load items', err));
   }, []);
