@@ -16,12 +16,15 @@ export type NewInventoryItemRequest = {
 const URL = 'http://localhost:5067/api';
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${URL}${path}`, init);
+  const response = await fetch(URL + path, init);
 
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status} ${response.statusText}`);
   }
-
+  // Some endpoints (like DELETE) return 204.
+  if (response.status === 204) {
+    return Promise.resolve(undefined as unknown as T);
+  }
   return response.json() as Promise<T>;
 }
 
@@ -34,6 +37,12 @@ export function createUser(user: NewUserRequest): Promise<User> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user)
+  });
+}
+
+export function deleteUser(id: number): Promise<void>{
+  return requestJson<void>(`/users/${id}`, {
+    method: 'DELETE'
   });
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Container, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { createUser, getUsers } from '../api/managerApi';
+import { createUser, getUsers, deleteUser } from '../api/managerApi';
 import type { User } from '../types/item_user_types';
 
 const USERS_PER_PAGE = 7;
@@ -26,6 +26,10 @@ export default function Users() {
   }, [users, currentPage]);
 
   const addUser = () => {
+    if (firstName.trim() === '' || lastName.trim() === '' || identifier.trim() === '') {
+      alert('Please fill in all fields');
+      return;
+    }
     const newUser = { firstName: firstName.trim(), lastName: lastName.trim(), identifier: identifier.trim() };
     createUser(newUser)
       .then((data) => {
@@ -35,6 +39,12 @@ export default function Users() {
         setIdentifier('');
       })
       .catch((err) => console.error('Failed to add user', err));
+  };
+
+  const removeUser = (id: number) => {
+    deleteUser(id)
+      .then(() => setUsers((prev) => prev.filter((u) => u.id !== id)))
+      .catch((err) => console.error('Failed to delete user', err));
   };
 
   const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
@@ -107,6 +117,7 @@ export default function Users() {
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
               <TableCell>Identifier</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -115,6 +126,17 @@ export default function Users() {
                 <TableCell>{u.firstName}</TableCell>
                 <TableCell>{u.lastName}</TableCell>
                 <TableCell>{u.identifier}</TableCell>
+                <TableCell sx={{ padding: 0, width: 'fit-content', whiteSpace: 'nowrap' }}>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    size="small"
+                    onClick={() => removeUser(u.id)}
+                    sx={{ width: 'fit-content' }}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -123,9 +145,9 @@ export default function Users() {
 
       <Container
         sx={{
-            display: 'flex', 
-            justifyContent: 'center', 
-            mt: 1 
+          display: 'flex', 
+          justifyContent: 'center', 
+          mt: 1 
           }}
       >
         <Pagination
