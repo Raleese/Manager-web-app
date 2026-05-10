@@ -86,13 +86,6 @@ export default function Inventory() {
                 <TableCell>{item.purchaseDate ? new Date(item.purchaseDate).toLocaleDateString() : 'N/A'}</TableCell>
               </TableRow>
             ))}
-            {filteredItems.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No items match the current filters.
-                </TableCell>
-              </TableRow>
-            )}
           </TableBody>
         </Table>
       </TableContainer>
