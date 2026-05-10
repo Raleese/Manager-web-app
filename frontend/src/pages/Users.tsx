@@ -4,6 +4,7 @@ import { createUser, getUsers, deleteUser } from '../api/managerApi';
 import type { User } from '../types/item_user_types';
 
 const USERS_PER_PAGE = 7;
+const ROW_HEIGHT = 52;
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
@@ -12,20 +13,25 @@ export default function Users() {
   const [lastName, setLastName] = useState('');
   const [identifier, setIdentifier] = useState('');
 
+  // Load users
   useEffect(() => {
     getUsers()
       .then((data) => setUsers(data))
       .catch((err) => console.error('Failed to load users', err));
   }, []);
 
+  // Ensure current page is valid after users change
   useEffect(() => {
+    // If the current page is empty after users update then set it to the last page
     const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
   }, [users, currentPage]);
 
+  // Add user
   const addUser = () => {
+    // Basic validation for whitespaces
     if (firstName.trim() === '' || lastName.trim() === '' || identifier.trim() === '') {
       alert('Please fill in all fields');
       return;
@@ -41,6 +47,7 @@ export default function Users() {
       .catch((err) => console.error('Failed to add user', err));
   };
 
+  // Remove user
   const removeUser = (id: number) => {
     deleteUser(id)
       .then(() => setUsers((prev) => prev.filter((u) => u.id !== id)))
@@ -122,7 +129,10 @@ export default function Users() {
           </TableHead>
           <TableBody>
             {pagedUsers.map((u) => (
-              <TableRow key={u.id}>
+              <TableRow
+                key={u.id}
+                sx={{ height: ROW_HEIGHT }}
+              >
                 <TableCell>{u.firstName}</TableCell>
                 <TableCell>{u.lastName}</TableCell>
                 <TableCell>{u.identifier}</TableCell>
@@ -137,6 +147,16 @@ export default function Users() {
                     Delete
                   </Button>
                 </TableCell>
+              </TableRow>
+            ))}
+
+            {/* Filling with empty rows for consistent table height */}
+            {Array.from({ length: Math.max(0, USERS_PER_PAGE - pagedUsers.length) }).map((_, idx) => (
+              <TableRow key={`empty-${idx}`} sx={{ height: ROW_HEIGHT }}>
+                <TableCell>&nbsp;</TableCell>
+                <TableCell>&nbsp;</TableCell>
+                <TableCell>&nbsp;</TableCell>
+                <TableCell>&nbsp;</TableCell>
               </TableRow>
             ))}
           </TableBody>
