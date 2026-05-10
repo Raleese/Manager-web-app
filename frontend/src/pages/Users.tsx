@@ -31,12 +31,27 @@ export default function Users() {
 
   // Add user
   const addUser = () => {
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const trimmedIdentifier = identifier.trim();
+
     // Basic validation for whitespaces
-    if (firstName.trim() === '' || lastName.trim() === '' || identifier.trim() === '') {
+    if (trimmedFirstName === '' || trimmedLastName === '' || trimmedIdentifier === '') {
       alert('Please fill in all fields');
       return;
     }
-    const newUser = { firstName: firstName.trim(), lastName: lastName.trim(), identifier: identifier.trim() };
+
+    const duplicateIdentifier = users.some(
+      (user) => user.identifier.trim() === trimmedIdentifier
+    );
+
+    // Checking for duplicate identifier
+    if (duplicateIdentifier) {
+      alert('Error: a user with this identifier already exists.');
+      return;
+    }
+
+    const newUser = { firstName: trimmedFirstName, lastName: trimmedLastName, identifier: trimmedIdentifier };
     createUser(newUser)
       .then((data) => {
         setUsers((prev) => [...prev, data]);
@@ -44,7 +59,10 @@ export default function Users() {
         setLastName('');
         setIdentifier('');
       })
-      .catch((err) => console.error('Failed to add user', err));
+      .catch((err) => {
+        console.error('Failed to create user', err);
+        alert('Failed to create user. Please try again.');
+      });
   };
 
   // Remove user
@@ -152,7 +170,7 @@ export default function Users() {
 
             {/* Filling with empty rows for consistent table height */}
             {Array.from({ length: Math.max(0, USERS_PER_PAGE - pagedUsers.length) }).map((_, idx) => (
-              <TableRow key={`empty-${idx}`} sx={{ height: ROW_HEIGHT }}>
+              <TableRow key={idx} sx={{ height: ROW_HEIGHT }}>
                 <TableCell>&nbsp;</TableCell>
                 <TableCell>&nbsp;</TableCell>
                 <TableCell>&nbsp;</TableCell>

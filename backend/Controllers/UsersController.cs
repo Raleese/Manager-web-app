@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
@@ -34,6 +35,15 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<User>> Post(User user)
     {
+        var normalizedIdentifier = user.Identifier.Trim().ToLowerInvariant();
+        var identifierExists = await _db.Users.AnyAsync(u => u.Identifier.ToLower() == normalizedIdentifier);
+
+        if (identifierExists)
+        {
+            return Conflict(new { message = "Identifier already exists." });
+        }
+
+        user.Identifier = user.Identifier.Trim();
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
