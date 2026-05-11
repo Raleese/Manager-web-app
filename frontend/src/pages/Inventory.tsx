@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Container, MenuItem, Pagination, Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { getInventory, createInventoryItem, getUsers } from '../api/managerApi';
+import { getInventory, createInventoryItem, deleteInventoryItem, getUsers } from '../api/managerApi';
 import type { Item, User } from '../types/item_user_types';
 
 const ITEMS_PER_PAGE = 7;
@@ -48,6 +48,13 @@ export default function Inventory() {
         setPurchaseDate('');
       })
       .catch((err) => console.error('Failed to add item', err));
+  }
+
+  const removeItem = (id: number) => {
+    deleteInventoryItem(id)
+      .then(() => getInventory())
+      .then((data) => setItems(data))
+      .catch((err) => console.error('Failed to delete item', err));
   }
 
   // Ensure current page is valid after item change
@@ -281,12 +288,18 @@ export default function Inventory() {
                     variant="outlined"
                     color="secondary"
                     size="small"
-                    //onClick={() => removeItem(item.id)}
+                    onClick={() => removeItem(item.id)}
                     sx={{ width: 'fit-content' }}
                   >
                     Delete
                   </Button>
-                  <Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    //onClick={() => softDeleteItem(item.id)}
+                    sx={{ width: 'fit-content', ml: 1 }}
+                  >
                     Soft Delete
                   </Button>
                 </TableCell>
