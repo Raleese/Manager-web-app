@@ -1,18 +1,4 @@
-import type { Item, User } from '../types/item_user_types';
-
-export type NewUserRequest = {
-  firstName: string;
-  lastName: string;
-  identifier: string;
-};
-
-export type NewInventoryItemRequest = {
-  type: 'Tablet' | 'Phone' | 'SIMCard' | 'Laptop';
-  identifier: string;
-  comment: string;
-  purchaseDate?: string | null;
-  userId: number | null;
-};
+import type { Item, User, NewInventoryItemRequest, NewUserRequest } from '../types/item_user_types';
 
 const URL = 'http://localhost:5067/api';
 
