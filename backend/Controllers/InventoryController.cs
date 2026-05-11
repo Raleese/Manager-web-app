@@ -1,4 +1,5 @@
 using backend.Data;
+using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
@@ -31,5 +32,53 @@ public class InventoryController : ControllerBase
             .ToList();
 
         return Ok(items);
+    }
+
+    [HttpPost]
+    public ActionResult Create([FromBody] CreateInventoryRequest request)
+    {
+        if (request == null)
+            return BadRequest();
+
+        var user = _db.Users.Find(request.UserId);
+        if (user == null)
+            return BadRequest(new { message = "User not found." });
+
+        var item = new InventoryItem
+        {
+            Type = request.Type,
+            Identifier = request.Identifier.Trim(),
+            Comment = request.Comment.Trim(),
+            PurchaseDate = request.PurchaseDate,
+            User = user,
+            IsAssigned = true,
+        };
+
+        _db.InventoryItems.Add(item);
+        _db.SaveChanges();
+
+        return NoContent();
+    }
+
+    public class CreateInventoryRequest
+    {
+        public ItemType Type { get; set; }
+        public string Identifier { get; set; } = "";
+        public string Comment { get; set; } = "";
+        public DateTime? PurchaseDate { get; set; }
+        public int UserId { get; set; }
+    }
+
+    [HttpDelete("{id}")]
+    public ActionResult Delete(int id)
+    {
+        var item = _db.InventoryItems.Find(id);
+        if (item == null)
+            return NotFound();
+
+        _db.InventoryItems.Remove(item);
+        _db.SaveChanges();
+
+        return Ok();
     }
 }
