@@ -9,6 +9,7 @@ const ROW_HEIGHT = 52;
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [identifier, setIdentifier] = useState('');
