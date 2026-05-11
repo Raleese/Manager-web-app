@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Container, MenuItem, Pagination, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Button, Container, MenuItem, Pagination, Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { getInventory, createInventoryItem, getUsers } from '../api/managerApi';
 import type { Item, User } from '../types/item_user_types';
 
@@ -103,114 +103,157 @@ export default function Inventory() {
         Inventory
       </Typography>
 
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mb: 3 }}>
-        <TextField
-          select
-          fullWidth
-          label="Type"
-          value={typeFilter}
-          onChange={(event) => setTypeFilter(event.target.value)}
-        >
-          <MenuItem value="">All types</MenuItem>
-          <MenuItem value="Tablet">Tablet</MenuItem>
-          <MenuItem value="Phone">Phone</MenuItem>
-          <MenuItem value="SIMCard">SIMCard</MenuItem>
-          <MenuItem value="Laptop">Laptop</MenuItem>
-        </TextField>
-
-        <TextField
-          fullWidth
-          label="Comment"
-          value={commentFilter}
-          onChange={(event) => setCommentFilter(event.target.value)}
-        />
-
-        <TextField
-          fullWidth
-          label="User"
-          value={userFilter}
-          onChange={(event) => setUserFilter(event.target.value)}
-        />
-      </Stack>
-
-      <Paper sx={{
-          p: 1.5,
+      <Paper         
+        sx={{
+          py: 1,
+          px: 2,
           borderRadius: 2,
           display: 'flex',
-          flexDirection: 'row',
-          gap: 1,
+          flexDirection: 'column',
+          gap: 1.5,
         }}
       >
-        <TextField
-          select
-          fullWidth
-          label="Type"
-          size="small"
-          value={type}
-          onChange={(event) => setType(event.target.value)}
-        >
-          <MenuItem value="Tablet">Tablet</MenuItem>
-          <MenuItem value="Phone">Phone</MenuItem>
-          <MenuItem value="SIMCard">SIMCard</MenuItem>
-          <MenuItem value="Laptop">Laptop</MenuItem>
-        </TextField>
+        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+          Add new item:
+        </Typography>
 
-        <TextField           
-          size="small"
-          label="Identifier"
-          value={identifier}
-          onChange={(e) => setIdentifier(e.target.value)}
-          fullWidth
-        />
-
-        <TextField           
-          size="small"
-          label="Comment"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          fullWidth
-        />
-
-        <TextField
-          select
-          fullWidth
-          label="User"
-          size="small"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-        >
-          <MenuItem value="">Unassigned</MenuItem>
-          {users.map((user) => (
-            <MenuItem key={user.id} value={user.id}>
-              {user.firstName} {user.lastName} ({user.identifier})
-            </MenuItem>
-          ))}
-        </TextField>
-
-        <TextField
-          size="small"
-          label="Purchase Date"
-          type="date"
-          value={purchaseDate}
-          onChange={(e) => setPurchaseDate(e.target.value)}
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-        />
-
-        <Button
-          variant="contained"
-          onClick={addItem}
+        <Box
           sx={{
-            minWidth: { xs: '100%', md: 112 },
-            height: 40,
-            backgroundColor: '#6b7280',
-            '&:hover': {
-              backgroundColor: '#4b5563'
-            }
+            display: 'flex',
+            // Smaller screens - vertical layout, larger screens - horizontal layout
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 1,
+            alignItems: 'center',
+          }}        
+        >
+          <TextField
+            select
+            fullWidth
+            label="Type"
+            size="small"
+            value={type}
+            onChange={(event) => setType(event.target.value)}
+          >
+            <MenuItem value="Tablet">Tablet</MenuItem>
+            <MenuItem value="Phone">Phone</MenuItem>
+            <MenuItem value="SIMCard">SIMCard</MenuItem>
+            <MenuItem value="Laptop">Laptop</MenuItem>
+          </TextField>
+
+          <TextField           
+            size="small"
+            label="Identifier"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            fullWidth
+          />
+
+          <TextField           
+            size="small"
+            label="Comment"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            fullWidth
+          />
+
+          <TextField
+            select
+            fullWidth
+            label="User"
+            size="small"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+          >
+            <MenuItem value="">Unassigned</MenuItem>
+            {users.map((user) => (
+              <MenuItem key={user.id} value={user.id}>
+                {user.firstName} {user.lastName} ({user.identifier})
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            size="small"
+            label="Purchase Date"
+            type="date"
+            value={purchaseDate}
+            onChange={(e) => setPurchaseDate(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+
+          <Button
+            variant="contained"
+            onClick={addItem}
+            sx={{
+              minWidth: { xs: '100%', md: 112 },
+              height: 40,
+              backgroundColor: '#6b7280',
+              '&:hover': {
+                backgroundColor: '#4b5563'
+              }
+            }}
+          >
+            Add Item
+          </Button>
+        </Box>
+      </Paper>
+
+      <Paper         
+        sx={{
+          py: 1,
+          px: 2,
+          borderRadius: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1.5,
+        }}
+      >        
+        
+        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+          Filter:
+        </Typography>
+
+        <Box
+          sx={{
+            display: 'flex',
+            // Smaller screens - vertical layout, larger screens - horizontal layout
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 1,
+            alignItems: 'center',
           }}
         >
-          Add Item
-        </Button>
+          <TextField
+            select
+            fullWidth
+            size="small"
+            label="Type"
+            value={typeFilter}
+            onChange={(event) => setTypeFilter(event.target.value)}
+          >
+            <MenuItem value="">All types</MenuItem>
+            <MenuItem value="Tablet">Tablet</MenuItem>
+            <MenuItem value="Phone">Phone</MenuItem>
+            <MenuItem value="SIMCard">SIMCard</MenuItem>
+            <MenuItem value="Laptop">Laptop</MenuItem>
+          </TextField>
+
+          <TextField
+            fullWidth
+            size="small"
+            label="Comment"
+            value={commentFilter}
+            onChange={(event) => setCommentFilter(event.target.value)}
+          />
+
+          <TextField
+            fullWidth
+            size="small"
+            label="User"
+            value={userFilter}
+            onChange={(event) => setUserFilter(event.target.value)}
+          />
+        </Box>
       </Paper>
 
       <TableContainer component={Paper}>
