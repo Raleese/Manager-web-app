@@ -16,3 +16,17 @@ export type User = {
     lastName: string;
     identifier: string;
 };
+
+export type NewUserRequest = {
+  firstName: string;
+  lastName: string;
+  identifier: string;
+};
+
+export type NewInventoryItemRequest = {
+  type: 'Tablet' | 'Phone' | 'SIMCard' | 'Laptop';
+  identifier: string;
+  comment: string;
+  purchaseDate?: string | null;
+  userId: number | null;
+};
