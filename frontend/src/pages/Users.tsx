@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Container, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { createUser, getUsers, deleteUser } from '../api/managerApi';
 import type { User } from '../types/item_user_types';
 
@@ -92,48 +92,63 @@ export default function Users() {
       </Typography>
       <Paper
         sx={{
-          p: 1.5,
+          py: 1,
+          px: 2,
           borderRadius: 2,
           display: 'flex',
-          flexDirection: 'row',
-          gap: 1,
+          flexDirection: 'column',
+          gap: 1.5,
         }}
       >
-        <TextField
-          size="small"
-          label="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          size="small"
-          label="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          size="small"
-          label="Identifier"
-          value={identifier}
-          onChange={(e) => setIdentifier(e.target.value)}
-          fullWidth
-        />
-        <Button
-          variant="contained"
-          onClick={addUser}
+        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+          Add new user:
+        </Typography>
+
+        <Box
           sx={{
-            minWidth: { xs: '100%', md: 112 },
-            height: 40,
-            backgroundColor: '#6b7280',
-            '&:hover': {
-              backgroundColor: '#4b5563'
-            }
+            display: 'flex',
+            // Smaller screens - vertical layout, larger screens - horizontal layout
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 1,
+            alignItems: 'center',
           }}
         >
-          Add User
-        </Button>
+          <TextField
+            size="small"
+            label="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            size="small"
+            label="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            size="small"
+            label="Identifier"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            fullWidth
+          />
+          <Button
+            variant="contained"
+            onClick={addUser}
+            sx={{
+              minWidth: { xs: '100%', md: 112 },
+              height: 40,
+              backgroundColor: '#6b7280',
+              '&:hover': {
+                backgroundColor: '#4b5563'
+              }
+            }}
+          >
+            Add User
+          </Button>
+        </Box>
       </Paper>
       
       <TableContainer component={Paper}>
