@@ -40,9 +40,16 @@ public class InventoryController : ControllerBase
         if (request == null)
             return BadRequest();
 
-        var user = _db.Users.Find(request.UserId);
-        if (user == null)
-            return BadRequest(new { message = "User not found." });
+        User? user = null;
+
+        if (request.UserId.HasValue)
+        {
+            var userId = request.UserId.Value;
+            user = _db.Users.Find(userId);
+            if (user == null)
+                return BadRequest(new { message = "User not found." });
+
+        }
 
         var item = new InventoryItem
         {
@@ -66,7 +73,7 @@ public class InventoryController : ControllerBase
         public string Identifier { get; set; } = "";
         public string Comment { get; set; } = "";
         public DateTime? PurchaseDate { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
     }
 
     [HttpDelete("{id}")]
