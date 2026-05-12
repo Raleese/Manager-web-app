@@ -4,16 +4,16 @@ A full-stack web application for managing users and their assigned inventory ite
 
 ## Screenshots
 
-## Users page
+### Users page
 <img width="2876" height="1350" alt="image" src="https://github.com/user-attachments/assets/a435a05e-b92e-4f8e-b321-d2c6111ebe37" />
 
-## Inventory page
+### Inventory page
 <img width="2877" height="1347" alt="image" src="https://github.com/user-attachments/assets/6b9e8696-15d1-4225-9f8b-f9b641659df2" />
 
-## Summary exported PDF
+### Summary exported PDF
 <img width="824" height="1166" alt="image" src="https://github.com/user-attachments/assets/e759234a-1802-4b68-838e-6c2dbbd5e5c7" />
 
-## Detailed exported PDF
+### Detailed exported PDF
 <img width="1030" height="1272" alt="image" src="https://github.com/user-attachments/assets/9383ef43-1ee6-4935-abe4-3bce38888121" />
 
 ## Features
