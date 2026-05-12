@@ -50,3 +50,11 @@ export function deleteInventoryItem(id: number): Promise<void> {
     method: 'DELETE'
   });
 }
+
+export function softDeleteInventoryItem(id: number): Promise<void> {
+  return requestJson<void>(`/inventory/${id}/soft`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  });
+}
