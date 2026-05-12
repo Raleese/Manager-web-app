@@ -65,8 +65,8 @@ public class ExportController : ControllerBase
             container.Page(page =>
             {
                 page.Size(PageSizes.A4);
-                page.Margin(2, Unit.Centimetre);
                 page.PageColor(Colors.White);
+                page.Margin(20);
 
                 page.Header()
                     .Text("Inventory Summary")
@@ -74,32 +74,34 @@ public class ExportController : ControllerBase
                     .Bold()
                     .AlignCenter();
 
-                page.Content().Table(table =>
-                {
-                    table.ColumnsDefinition(columns =>
+                page.Content()
+                    .PaddingTop(25)
+                    .Table(table =>
                     {
-                        columns.RelativeColumn();
-                        columns.RelativeColumn();
-                        columns.RelativeColumn();
-                        columns.RelativeColumn();
-                    });
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.RelativeColumn();
+                            columns.RelativeColumn();
+                            columns.RelativeColumn();
+                            columns.RelativeColumn();
+                        });
 
-                    table.Header(header =>
-                    {
-                        header.Cell().Text("Type").Bold();
-                        header.Cell().Text("Identifier").Bold();
-                        header.Cell().Text("Assigned User").Bold();
-                        header.Cell().Text("Purchase Date").Bold();
-                    });
+                        table.Header(header =>
+                        {
+                            header.Cell().Text("Type").Bold();
+                            header.Cell().Text("Identifier").Bold();
+                            header.Cell().Text("Assigned User").Bold();
+                            header.Cell().Text("Purchase Date").Bold();
+                        });
 
-                    foreach (var item in items)
-                    {
-                        table.Cell().Text(item.Type.ToString());
-                        table.Cell().Text(item.Identifier);
-                        table.Cell().Text(item.User != null ? $"{item.User.FirstName} {item.User.LastName}" : "N/A");
-                        table.Cell().Text(item.PurchaseDate.HasValue ? item.PurchaseDate.Value.ToShortDateString() : "N/A");
-                    }
-                });
+                        foreach (var item in items)
+                        {
+                            table.Cell().Text(item.Type.ToString());
+                            table.Cell().Text(item.Identifier);
+                            table.Cell().Text(item.User != null ? $"{item.User.FirstName} {item.User.LastName}" : "N/A");
+                            table.Cell().Text(item.PurchaseDate.HasValue ? item.PurchaseDate.Value.ToShortDateString() : "N/A");
+                        }
+                    });
             });
         }).GeneratePdf();
     }
@@ -111,8 +113,8 @@ public class ExportController : ControllerBase
             container.Page(page =>
             {
                 page.Size(PageSizes.A4);
-                page.Margin(2, Unit.Centimetre);
                 page.PageColor(Colors.White);
+                page.Margin(20);
 
                 page.Header()
                     .Text("Inventory Details")
@@ -120,35 +122,37 @@ public class ExportController : ControllerBase
                     .Bold()
                     .AlignCenter();
 
-                page.Content().Column(column =>
-                {
-                    foreach (var item in items)
+                page.Content()
+                    .PaddingTop(25)
+                    .Column(column =>
                     {
-                        column.Item().Border(1).Padding(10).Column(card =>
+                        foreach (var item in items)
                         {
-                            card.Item().Text($"Type: {item.Type}");
-                            card.Item().Text($"Identifier: {item.Identifier}");
-                            card.Item().Text($"Comment: {item.Comment}");
-
-                            if (item.User != null)
+                            column.Item().Border(1).Padding(10).Column(card =>
                             {
-                                card.Item().Text(
-                                    $"Assigned to: {item.User.FirstName} {item.User.LastName}"
-                                );
+                                card.Item().Text($"Type: {item.Type}");
+                                card.Item().Text($"Identifier: {item.Identifier}");
+                                card.Item().Text($"Comment: {item.Comment}");
 
-                                card.Item().Text(
-                                    $"User identifier: {item.User.Identifier}"
-                                );
-                            }
-                            else
-                            {
-                                card.Item().Text("Assigned to: N/A");
-                            }
-                            card.Item().Text($"Purchase Date: {(item.PurchaseDate.HasValue ? item.PurchaseDate.Value.ToShortDateString() : "N/A")}");
-                        });
-                        column.Item().PaddingBottom(10);
-                    }
-                });
+                                if (item.User != null)
+                                {
+                                    card.Item().Text(
+                                        $"Assigned to: {item.User.FirstName} {item.User.LastName}"
+                                    );
+
+                                    card.Item().Text(
+                                        $"User identifier: {item.User.Identifier}"
+                                    );
+                                }
+                                else
+                                {
+                                    card.Item().Text("Assigned to: N/A");
+                                }
+                                card.Item().Text($"Purchase Date: {(item.PurchaseDate.HasValue ? item.PurchaseDate.Value.ToShortDateString() : "N/A")}");
+                            });
+                            column.Item().PaddingBottom(10);
+                        }
+                    });
             });
         }).GeneratePdf();
     }
