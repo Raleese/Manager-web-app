@@ -8,5 +8,5 @@ public class InventoryItem
     public string Comment { get; set; } = "";
     public User? User { get; set; }
     public DateTime? PurchaseDate { get; set; }
-    public bool IsAssigned { get; set; } = true;
+    public bool IsActive { get; set; } = true;
 }
