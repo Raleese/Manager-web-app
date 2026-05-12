@@ -1,4 +1,4 @@
-import type { Item, User, NewInventoryItemRequest, NewUserRequest } from '../types/item_user_types';
+import type { Item, User, NewInventoryItemRequest, NewUserRequest, ExportPdfRequest } from '../types/item_user_types';
 
 const URL = 'http://localhost:5067/api';
 
@@ -56,5 +56,19 @@ export function softDeleteInventoryItem(id: number): Promise<void> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id })
+  });
+}
+
+export function exportInventoryToPdf(request: ExportPdfRequest): Promise<Blob> {
+  return fetch(URL + '/export/pdf', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request)
+  }).then(async (response) => {
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+    }
+
+    return response.blob();
   });
 }
