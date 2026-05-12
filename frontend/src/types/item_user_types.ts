@@ -30,3 +30,10 @@ export type NewInventoryItemRequest = {
     purchaseDate?: string | null;
     userId: number | null;
 };
+
+export type ExportPdfRequest = {
+    type?: string;
+    comment?: string;
+    userId?: number;
+    template: string;
+};
