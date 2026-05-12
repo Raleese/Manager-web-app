@@ -26,7 +26,7 @@ public class InventoryController : ControllerBase
                 i.Identifier,
                 i.Comment,
                 i.PurchaseDate,
-                i.IsAssigned,
+                i.IsActive,
                 User = i.User != null ? new { i.User.Id, i.User.FirstName, i.User.LastName, Identifier = i.User.Identifier } : null
             })
             .ToList();
@@ -58,7 +58,7 @@ public class InventoryController : ControllerBase
             Comment = request.Comment.Trim(),
             PurchaseDate = request.PurchaseDate,
             User = user,
-            IsAssigned = true,
+            IsActive = true,
         };
 
         _db.InventoryItems.Add(item);
@@ -84,6 +84,19 @@ public class InventoryController : ControllerBase
             return NotFound();
 
         _db.InventoryItems.Remove(item);
+        _db.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpPost("{id}/soft")]
+    public ActionResult SoftDelete(int id)
+    {
+        var item = _db.InventoryItems.Find(id);
+        if (item == null)
+            return NotFound();
+
+        item.IsActive = !item.IsActive;
         _db.SaveChanges();
 
         return Ok();
