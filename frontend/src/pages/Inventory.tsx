@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Container, MenuItem, Pagination, Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { getInventory, createInventoryItem, deleteInventoryItem, getUsers, softDeleteInventoryItem } from '../api/managerApi';
+import { getInventory, createInventoryItem, deleteInventoryItem, getUsers, softDeleteInventoryItem, exportInventoryToPdf } from '../api/managerApi';
 import type { Item, User } from '../types/item_user_types';
 
 const ITEMS_PER_PAGE = 7;
@@ -21,6 +21,9 @@ export default function Inventory() {
   const [userId, setUserId] = useState('');
   const [purchaseDate, setPurchaseDate] = useState('');
 
+  const [exportType, setExportType] = useState("Summary");
+
+  // Add new item to inventory
   const addItem = () => {
     const trimmedIdentifier = identifier.trim();
     const trimmedComment = comment.trim();
@@ -50,6 +53,7 @@ export default function Inventory() {
       .catch((err) => console.error('Failed to add item', err));
   }
 
+  // Hard delete item
   const removeItem = (id: number) => {
     deleteInventoryItem(id)
       .then(() => getInventory())
@@ -57,11 +61,34 @@ export default function Inventory() {
       .catch((err) => console.error('Failed to delete item', err));
   }
 
+  // Soft delete item (mark as inactive from PDF exports)
   const softDeleteItem = (id: number) => {
     softDeleteInventoryItem(id)
       .then(() => getInventory())
       .then((data) => setItems(data))
       .catch((err) => console.error('Failed to soft delete item', err));
+  }
+
+  // Export PDF with current filters and selected template
+  const exportPDF = () => {
+    exportInventoryToPdf({
+      type: typeFilter || undefined,
+      comment: commentFilter || undefined,
+      userId: userFilter ? users.find(u => `${u.firstName} ${u.lastName} ${u.identifier}`.toLowerCase().includes(userFilter.toLowerCase()))?.id : undefined,
+      template: exportType
+    })
+    // Handle the PDF blob response and trigger download
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = "inventory-export.pdf";
+        link.click();
+
+        // Clean up the URL object after download
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => console.error('Failed to export PDF', err));
   }
 
   // Ensure current page is valid after item change
@@ -104,8 +131,8 @@ export default function Inventory() {
   const pagedItems = filteredItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <Container 
-      sx={{ 
+    <Container
+      sx={{
         mt: 4,
         pb: 4,
         display: 'flex',
@@ -113,9 +140,58 @@ export default function Inventory() {
         gap: 2,
       }}
     >
-      <Typography variant="h4" gutterBottom>
-        Inventory
-      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 2,
+          flexWrap: 'wrap',
+        }}
+      >
+        <Typography variant="h4" sx={{ flexShrink: 0 }}>
+          Inventory
+        </Typography>
+
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            flexWrap: 'wrap',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <TextField
+            select
+            sx={{ width: { xs: '100%', sm: 220 } }}
+            label="Export type"
+            size="small"
+            value={exportType}
+            onChange={(event) => setExportType(event.target.value)}
+          >
+            <MenuItem value="Summary">Summary</MenuItem>
+            <MenuItem value="Detailed">Detailed</MenuItem>
+          </TextField>
+
+          <Button
+            variant="contained"
+            onClick={exportPDF}
+            sx={{
+              minWidth: { xs: '100%', sm: 140 },
+              height: 40,
+              backgroundColor: '#6b7280',
+              flexShrink: 0,
+              '&:hover': {
+                backgroundColor: '#4b5563',
+              },
+            }}
+          >
+            Export PDF
+          </Button>
+        </Box>
+      </Box>
 
       <Paper         
         sx={{
