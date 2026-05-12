@@ -98,3 +98,12 @@ Supported PDF templates are `Summary` and `Detailed`.
 ## Data Storage
 
 The backend currently uses EF Core in-memory database.
+
+## Database Seeding
+
+The backend includes a simple database seeder to populate the in-memory store with sample data for development.
+
+- Seeder class: `backend/Data/DbSeeder.cs`
+- What it does: Adds a few sample `User` and `InventoryItem` records when the application starts if the database is empty.
+
+Remove or modify the seeder as needed for production scenarios.
