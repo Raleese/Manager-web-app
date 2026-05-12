@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Container, MenuItem, Pagination, Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { getInventory, createInventoryItem, deleteInventoryItem, getUsers } from '../api/managerApi';
+import { getInventory, createInventoryItem, deleteInventoryItem, getUsers, softDeleteInventoryItem } from '../api/managerApi';
 import type { Item, User } from '../types/item_user_types';
 
 const ITEMS_PER_PAGE = 7;
@@ -55,6 +55,13 @@ export default function Inventory() {
       .then(() => getInventory())
       .then((data) => setItems(data))
       .catch((err) => console.error('Failed to delete item', err));
+  }
+
+  const softDeleteItem = (id: number) => {
+    softDeleteInventoryItem(id)
+      .then(() => getInventory())
+      .then((data) => setItems(data))
+      .catch((err) => console.error('Failed to soft delete item', err));
   }
 
   // Ensure current page is valid after item change
@@ -277,7 +284,16 @@ export default function Inventory() {
           </TableHead>
           <TableBody>
             {pagedItems.map((item) => (
-              <TableRow key={item.id}>
+              <TableRow
+                key={item.id}
+                sx={{
+                  opacity: item.isActive ? 1 : 0.45,
+                  backgroundColor: item.isActive ? 'inherit' : 'action.disabledBackground',
+                  '& td': {
+                    color: item.isActive ? 'inherit' : 'text.disabled',
+                  },
+                }}
+              >
                 <TableCell>{item.type}</TableCell>
                 <TableCell>{item.identifier}</TableCell>
                 <TableCell>{item.comment}</TableCell>
@@ -297,7 +313,7 @@ export default function Inventory() {
                     variant="outlined"
                     color="primary"
                     size="small"
-                    //onClick={() => softDeleteItem(item.id)}
+                    onClick={() => softDeleteItem(item.id)}
                     sx={{ width: 'fit-content', ml: 1 }}
                   >
                     Soft Delete
