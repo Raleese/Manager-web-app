@@ -3,6 +3,7 @@ import { Box, Button, Container, Pagination, Paper, Table, TableBody, TableCell,
 import { createUser, getUsers, deleteUser } from '../api/managerApi';
 import type { User } from '../types/item_user_types';
 
+// For pagination and consistent table height
 const USERS_PER_PAGE = 7;
 const ROW_HEIGHT = 52;
 
@@ -42,6 +43,7 @@ export default function Users() {
       return;
     }
 
+    // Check for duplicate identifier
     const duplicateIdentifier = users.some(
       (user) => user.identifier.trim() === trimmedIdentifier
     );
@@ -187,6 +189,7 @@ export default function Users() {
             {/* Filling with empty rows for consistent table height */}
             {Array.from({ length: Math.max(0, USERS_PER_PAGE - pagedUsers.length) }).map((_, idx) => (
               <TableRow key={idx} sx={{ height: ROW_HEIGHT }}>
+                {/* NOTE: &nbsp - non-breaking space. Allows the cell to have content and keep its height */ }
                 <TableCell>&nbsp;</TableCell>
                 <TableCell>&nbsp;</TableCell>
                 <TableCell>&nbsp;</TableCell>
