@@ -18,6 +18,7 @@ public class InventoryController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<object>> Get()
     {
+        // Project only the fields the frontend needs instead of returning entities
         var items = _db.InventoryItems
             .Select(i => new
             {
@@ -44,6 +45,7 @@ public class InventoryController : ControllerBase
 
         if (request.UserId.HasValue)
         {
+            // If a user ID is provided, attempt to find the user. If not found, return a bad request
             var userId = request.UserId.Value;
             user = _db.Users.Find(userId);
             if (user == null)
@@ -67,15 +69,6 @@ public class InventoryController : ControllerBase
         return NoContent();
     }
 
-    public class CreateInventoryRequest
-    {
-        public ItemType Type { get; set; }
-        public string Identifier { get; set; } = "";
-        public string Comment { get; set; } = "";
-        public DateTime? PurchaseDate { get; set; }
-        public int? UserId { get; set; }
-    }
-
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {
@@ -96,6 +89,7 @@ public class InventoryController : ControllerBase
         if (item == null)
             return NotFound();
 
+        // Soft delete
         item.IsActive = !item.IsActive;
         _db.SaveChanges();
 

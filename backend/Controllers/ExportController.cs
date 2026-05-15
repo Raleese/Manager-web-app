@@ -22,21 +22,24 @@ public class ExportController : ControllerBase
     [HttpPost("pdf")]
     public IActionResult ExportToPdf([FromBody] ExportPdfRequest request)
     {
-        //
+        // Build the query based on the provided filters
         var query = _db.InventoryItems
             .Include(i => i.User)
             .Where(i => i.IsActive);
 
+        // Check if type filter is provided and apply it to the query
         if (!string.IsNullOrEmpty(request.Type))
         {
             query = query.Where(i => i.Type.ToString() == request.Type);
         }
 
+        // Check if comment filter is provided and apply it to the query
         if (!string.IsNullOrEmpty(request.Comment))
         {
             query = query.Where(i => i.Comment.Contains(request.Comment));
         }
 
+        // Check if user filter is provided and apply it to the query
         if (request.UserId.HasValue)
         {
             query = query.Where(i => i.User != null && i.User.Id == request.UserId.Value);
@@ -52,6 +55,7 @@ public class ExportController : ControllerBase
         }
         else
         {
+            // The detailed template prints one card per item
             pdfBytes = CreateDetailed(items);
         }
 

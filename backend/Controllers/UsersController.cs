@@ -35,6 +35,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<User>> Post(User user)
     {
+        // Case-insensitive check
         var normalizedIdentifier = user.Identifier.Trim().ToLowerInvariant();
         var identifierExists = await _db.Users.AnyAsync(u => u.Identifier.ToLower() == normalizedIdentifier);
 
@@ -43,6 +44,7 @@ public class UsersController : ControllerBase
             return Conflict(new { message = "Identifier already exists." });
         }
 
+        // Persist the trimmed value while leaving the other user fields unchanged
         user.Identifier = user.Identifier.Trim();
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
