@@ -49,6 +49,7 @@ A full-stack web application for managing users and their assigned inventory ite
 ```text
 Manager-web-app/
   backend/          ASP.NET Core API
+  backend.Tests/    Backend unit tests
   frontend/         React/Vite client
   README.md
 ```
@@ -83,6 +84,16 @@ npm run dev
 ```
 
 Vite starts the client on `http://localhost:5173` by default.
+
+## Unit Tests
+
+The backend includes xUnit tests for user and inventory controller behavior, using an EF Core in-memory database for each test.
+
+Run the backend tests from the project root:
+
+```powershell
+dotnet test backend.Tests\backend.Tests.csproj
+```
 
 ## API Overview
 
