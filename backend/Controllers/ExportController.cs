@@ -3,7 +3,6 @@ using backend.Models;
 using backend.Data;
 using QuestPDF.Helpers;
 using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
