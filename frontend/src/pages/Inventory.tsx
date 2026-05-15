@@ -3,6 +3,7 @@ import { Button, Container, MenuItem, Pagination, Paper, Box, Table, TableBody, 
 import { getInventory, createInventoryItem, deleteInventoryItem, getUsers, softDeleteInventoryItem, exportInventoryToPdf } from '../api/managerApi';
 import type { Item, User } from '../types/item_user_types';
 
+// For pagination and consistent table height
 const ITEMS_PER_PAGE = 7;
 const ROW_HEIGHT = 52;
 
@@ -29,7 +30,7 @@ export default function Inventory() {
     const trimmedComment = comment.trim();
 
     if (trimmedIdentifier === '' || trimmedComment === '') {
-      alert('Please fill in all fields');
+      alert('Please fill in identifier and comment fields');
       return;
     }
 
@@ -45,6 +46,7 @@ export default function Inventory() {
       .then(() => getInventory())
       .then((data) => {
         setItems(data);
+        // Empty the fields
         setIdentifier('');
         setComment('');
         setUserId('');
@@ -100,18 +102,21 @@ export default function Inventory() {
     }
   }, [items, currentPage]);
 
+  // Load inventory items on component mount
   useEffect(() => {
     getInventory()
       .then((data) => setItems(data))
       .catch((err) => console.error('Failed to load items', err));
   }, []);
 
+  // Load users for dropdowns on component mount
   useEffect(() => {
     getUsers()
       .then((data) => setUsers(data))
       .catch((err) => console.error('Failed to load users', err));
   }, []);
 
+  // Apply filters to items list
   const filteredItems = useMemo(() => {
     const normalizedCommentFilter = commentFilter.trim().toLowerCase();
     const normalizedUserFilter = userFilter.trim().toLowerCase();
@@ -361,6 +366,7 @@ export default function Inventory() {
           <TableBody>
             {pagedItems.map((item) => (
               <TableRow
+                // Soft-deleted items are shown with less opacity
                 key={item.id}
                 sx={{
                   opacity: item.isActive ? 1 : 0.45,
