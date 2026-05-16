@@ -35,6 +35,9 @@ export default function Home() {
 				<Typography variant="body1">
 					Use the navigation links above to get started.
 				</Typography>
+				<Typography variant="body1">
+					Inventory information can be exported as a PDF document with a chosen format: summary or detailed.
+				</Typography>
 			</Paper>
 		</Box>
 	);
